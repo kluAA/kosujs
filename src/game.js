@@ -1,24 +1,40 @@
 import Circle from "./circle";
+import { DearYou } from "./beatmap";
 
 class Game {
     constructor(canvas, ctx) {
         this.mousePos = { x: 0, y: 0 }
         this.canvas = canvas;
         this.ctx = ctx;
+        this.beatmap = DearYou;
         this.load();
     }
 
     load() {
-        const sound = document.createElement("audio");
-        sound.src = "../dist/DearYou.mp3";
-        sound.setAttribute("preload", "auto");
-        sound.setAttribute("controls", "none");
-        document.body.appendChild(sound);
+        this.initializeSound();
         this.circle = new Circle({ color: "silver", radius: 35, pos: [200, 100], number: 3 }, this.ctx);
         this.recordMousePos();
         this.keyPress();
+        this.play();
         this.circle.render(this.ctx);
     }
+
+    play() {
+        let playBtn = document.getElementById("play");
+        playBtn.addEventListener("click", e => {
+            this.sound.volume = 0.5;
+            this.sound.play();
+        })
+    }
+
+    initializeSound() {
+        this.sound = document.createElement("audio");
+        this.sound.src = DearYou.src;
+        this.sound.setAttribute("preload", "auto");
+        this.sound.setAttribute("controls", "none");
+        this.sound.style.display = "none";
+        document.body.appendChild(this.sound);
+    }   
 
     recordMousePos() {
         this.canvas.onmousemove = e => {

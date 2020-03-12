@@ -11,3 +11,7 @@ canvas {
     display: block;
     cursor: url("./cursor.png") 9 9, pointer;
 }
+
+#play {
+    cursor: pointer;
+}
