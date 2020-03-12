@@ -1,0 +1,13 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+
+canvas {
+    margin: 0 auto;
+    margin-top: 50px;
+    display: block;
+    cursor: url("./cursor.png") 9 9, pointer;
+}
