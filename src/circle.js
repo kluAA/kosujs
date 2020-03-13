@@ -5,6 +5,8 @@ class Circle {
         this.posX = attr.pos[0];
         this.posY = attr.pos[1];
         this.number = attr.number;
+        this.sT = attr.sT;
+        this.hT = attr.hT;
         this.ctx = ctx;
     }
 

@@ -4,6 +4,10 @@ html, body {
     padding: 0;
 }
 
+button { 
+    margin-left: calc(50% - 500px);
+    margin-top: 5px;
+}
 
 canvas {
     margin: 0 auto;
