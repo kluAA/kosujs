@@ -8,11 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // canvas.style.border = "5px solid lightgrey";
     canvas.setAttribute('tabindex', 0);
     canvas.focus();
-
     const ctx = canvas.getContext("2d");
     
     new Game(canvas, ctx);
-
 })
 
 
