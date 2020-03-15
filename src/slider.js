@@ -9,6 +9,7 @@ class Slider {
         this.number = attr.number;
         this.sT = attr.sT;
         this.hT = attr.hT;
+        this.eT = attr.eT;
         this.currentTime = null;
         this.ctx = ctx;
     }
@@ -104,6 +105,7 @@ class Slider {
 
     drawSliderLines(ctx) {
         const pt = this.findConnectionPoints();
+
         ctx.strokeStyle="white";
         ctx.beginPath();
         ctx.moveTo(pt.firstStartPos[0], pt.firstStartPos[1]);
@@ -121,21 +123,24 @@ class Slider {
         
         const ctx = this.ctx;
         this.drawSliderLines(ctx);
-
         this.drawTwoCircles(ctx);
         
 
-        
+        if (this.currentTime >= this.hT && this.currentTime <= this.eT) {
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = "yellow";
+            ctx.beginPath();
+            let newX = this.posX + (this.endX - this.posX) * ((this.currentTime - this.hT) / (this.eT - this.hT))
+            let newY = this.posY + (this.endY - this.posY) * ((this.currentTime - this.hT) / (this.eT - this.hT))
+            ctx.arc(newX, newY, this.radius, 0, Math.PI * 2)
+            ctx.stroke();
+        }
 
-       
-
-       
 
 
-        
 
         //shrinking outer circle
-        if (this.currentTime) {
+        if (this.currentTime >= this.sT && this.currentTime <= this.hT) {
             ctx.lineWidth = 5;
             ctx.strokeStyle = "rgba(102, 95, 95, 0.404)";
             ctx.beginPath();

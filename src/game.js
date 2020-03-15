@@ -1,5 +1,5 @@
 import Circle from "./circle";
-import { DearYou } from "./beatmap";
+import { DearYou, Gurenge } from "./beatmap";
 import Slider from "./slider";
 
 class Game {
@@ -7,16 +7,19 @@ class Game {
         this.mousePos = { x: 0, y: 0 }
         this.canvas = canvas;
         this.ctx = ctx;
-        this.beatmap = DearYou;
+        this.beatmap = Gurenge;
         this.circles = []
         this.time = 0;
+        this.keyDown = false;
+        this.keyUp = true;
         this.load();
     }
 
     load() {
         this.initializeSound();
         this.recordMousePos();
-        this.keyPress();
+        this.handleKeyDown();
+        this.handleKeyUp();
         this.play();
     }
 
@@ -28,7 +31,7 @@ class Game {
                 pos: circle.pos,
                 number: circle.num,
                 sT: circle.sT,
-                hT: circle.hT
+                hT: circle.hT,
             },this.ctx))
         })
     }
@@ -61,7 +64,8 @@ class Game {
             //     } 
 
             // })
-            let slider = new Slider({ pos: [200, 100], end: [400, 300], number: 1, sT: 2, hT: 3, color: "rgba(102, 95, 95, 0.404)", radius: 35}, this.ctx)
+            let slider = new Slider({ pos: [200, 100], end: [400, 300], number: 1, sT: 2, hT: 5, eT: 8, color: "rgba(102, 95, 95, 0.404)", radius: 35}, this.ctx)
+            slider.setCurrentTime(this.sound.currentTime)
             slider.render();
             // this.circles[0].render();
             requestAnimationFrame(this.animate.bind(this));
@@ -70,7 +74,7 @@ class Game {
 
     initializeSound() {
         this.sound = document.createElement("audio");
-        this.sound.src = DearYou.src;
+        this.sound.src = Gurenge.src;
         this.sound.setAttribute("preload", "auto");
         this.sound.setAttribute("controls", "none");
         this.sound.style.display = "none";
@@ -92,11 +96,25 @@ class Game {
         };
     }
 
-    keyPress() {
-        this.canvas.onkeypress = e => {
-            if (!this.circles[0]) return;
+    handleKeyDown() {
+        this.canvas.onkeydown = e => {
+            this.keyDown = true;
+            if (!this.keyUp) return;
+            // if (!this.circles[0]) return;
             let pt = this.getMouse(this.canvas);
-            if (this.circles[0].isInside(pt.x, pt.y)) this.handleClear("hit");
+            if (this.circles[0].isInside(pt.x, pt.y) && this.keyUp) {
+                this.handleClear("hit");
+            }
+            this.keyUp = false;
+            console.log(this.keyDown, this.keyUp)
+        }
+    }
+
+    handleKeyUp() {
+        this.canvas.onkeyup = e => {
+            this.keyDown = false;
+            this.keyUp = true;
+            console.log(this.keyDown, this.keyUp);
         }
     }
 
