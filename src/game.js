@@ -70,14 +70,13 @@ class Game {
 
 
     animate(time) {
-        // console.log(this.time);
         if (this.sound.currentTime < this.sound.duration) {
             this.ctx.clearRect(0, 0, 1000, 580)
             this.objects.forEach(obj => {
               
                 if ((this.sound.currentTime >= obj.sT) && (obj.eT <= this.sound.currentTime)) {
                     let pt = this.getMouse();
-                    if (obj instanceof Slider && obj.isInside(pt.x, pt.y)) {
+                    if (obj instanceof Slider && obj.isInside(pt.x, pt.y) && !this.keyUp) {
                         this.handleClear(true, 300);
                         this.incrementCombo();
                     } else {
@@ -117,9 +116,8 @@ class Game {
         this.canvas.onkeydown = e => {
             this.keyDown = true;
             if (!this.keyUp) return;
-            // if (!this.circles[0]) return;
             let pt = this.getMouse();
-            console.log(`{ pos: [${pt.x}, ${pt.y}], num: , sT: , hT: ${this.sound.currentTime}, color: },`);
+            console.log(`{ pos: [${pt.x}, ${pt.y}], num: , sT: ${this.sound.currentTime - 1}, hT: ${this.sound.currentTime}, color: },`);
 
             
             if (this.objects[0] instanceof Circle) {
