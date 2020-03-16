@@ -197,7 +197,7 @@ export const Gurenge = {
         { pos: [378, 191], num: 2, sT: 83.137136, hT: 84.137136, color: blue },
         { pos: [716, 196], num: 3, sT: 83.513043, hT: 84.513043, color: blue },
     
-        { pos: [194, 251], end: [827, 251], num: 1, sT: 83.3, hT: 84.33, eT: 88.1, color: red, slider: true },
+        { pos: [827, 251], end: [194, 251], num: 1, sT: 83.3, hT: 84.33, eT: 88.1, color: red, slider: true },
 
     ]
 }
