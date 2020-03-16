@@ -79,6 +79,7 @@ class Game {
                     let pt = this.getMouse();
                     if (obj instanceof Slider && obj.isInside(pt.x, pt.y)) {
                         this.handleClear(true, 300);
+                        this.incrementCombo();
                     } else {
                         this.handleClear();
                     }
@@ -118,6 +119,8 @@ class Game {
             if (!this.keyUp) return;
             // if (!this.circles[0]) return;
             let pt = this.getMouse();
+            console.log(`{ pos: [${pt.x}, ${pt.y}], num: , sT: , hT: ${this.sound.currentTime}, color: },`);
+
             
             if (this.objects[0] instanceof Circle) {
                 let inside = this.objects[0].isInside(pt.x, pt.y);
@@ -174,7 +177,12 @@ class Game {
     }
 
     resetCombo() {
-        this.combo = 1;
+        if (this.combo >= 5) {
+            this.playComboBreak();
+            this.combo = 1;
+        } else {
+            this.combo = 1;
+        }
     }
 
     renderScore() {
@@ -206,7 +214,7 @@ class Game {
             this.incrementScore(score);
             this.objects.shift();
         } else { //miss
-            this.combo = 1;
+            this.resetCombo();
             this.objects.shift();
         }
     }
@@ -220,6 +228,17 @@ class Game {
         this.hitSound.style.display = "none";
         document.body.appendChild(this.hitSound);
         this.hitSound.play();
+        
+    }
+
+    playComboBreak() {
+        this.comboBreak = document.createElement("audio");
+        this.comboBreak.src = "../dist/combobreak.mp3";
+        this.comboBreak.setAttribute("preload", "auto");
+        this.hitSound.setAttribute("controls", "none");
+        this.comboBreak.style.display = "none";
+        document.body.appendChild(this.comboBreak);
+        this.comboBreak.play();
     }
 
     getMouse() {
@@ -237,7 +256,6 @@ class Game {
 
         mx = this.mousePos.x - offsetX;
         my = this.mousePos.y - offsetY;
-        console.log(mx, my);
 
         return {
             x: mx,

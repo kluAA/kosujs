@@ -44,7 +44,7 @@ class Circle {
         //shrinking outer circle
         if (this.currentTime >= this.sT && this.currentTime <= this.hT) {
             ctx.lineWidth = 5;
-            ctx.strokeStyle = "rgba(102, 95, 95, 0.404)";
+            ctx.strokeStyle = this.color;
             ctx.beginPath();
             ctx.arc(this.posX, this.posY, this.radius * (2.5 * (this.hT - this.currentTime) + .95), 0, 2 * Math.PI)
             ctx.stroke();

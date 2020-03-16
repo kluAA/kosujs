@@ -107,7 +107,7 @@ class Slider {
 
     drawSliderLines(ctx) {
         const pt = this.findConnectionPoints();
-
+        ctx.lineWidth = 3;
         ctx.strokeStyle="white";
         ctx.beginPath();
         ctx.moveTo(pt.firstStartPos[0], pt.firstStartPos[1]);
