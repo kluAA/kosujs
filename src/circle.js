@@ -7,6 +7,7 @@ class Circle {
         this.number = attr.number;
         this.sT = attr.sT;
         this.hT = attr.hT;
+        this.eT = this.hT;
         this.currentTime = null;
         this.ctx = ctx;
     }
@@ -28,12 +29,7 @@ class Circle {
         ctx.beginPath();
         ctx.arc(this.posX, this.posY, this.radius, 0, 2 * Math.PI);
         ctx.fill();
-        //bezier test
-        ctx.strokeStyle = "white";
-        ctx.beginPath();
-        // ctx.moveTo(500, 600);
-        ctx.bezierCurveTo(160, 100, 400, 500, 300, 100);
-        ctx.stroke();
+       
         //outline circle
         ctx.strokeStyle = "white"
         ctx.lineWidth = 3;
@@ -46,7 +42,7 @@ class Circle {
         ctx.textBaseline = "middle";
         ctx.fillText(this.number, this.posX-8, this.posY);
         //shrinking outer circle
-        if (this.currentTime) {
+        if (this.currentTime >= this.sT && this.currentTime <= this.hT) {
             ctx.lineWidth = 5;
             ctx.strokeStyle = "rgba(102, 95, 95, 0.404)";
             ctx.beginPath();

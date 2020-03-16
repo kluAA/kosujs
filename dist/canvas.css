@@ -2,6 +2,7 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    background: black;
 }
 
 button { 
@@ -14,6 +15,7 @@ canvas {
     margin-top: 50px;
     display: block;
     cursor: url("./cursor.png") 9 9, pointer;
+   
 }
 
 #play {
