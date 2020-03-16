@@ -29,7 +29,7 @@ export const DearYou = {
 
 
 export const Gurenge = { 
-    src: "../dist/gurenge.mp3",
+    src: "./dist/gurenge.mp3",
     name: "Kimetsu no Yaiba OP Gurenge",
     author: "LiSa",
     data: [

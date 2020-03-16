@@ -221,7 +221,7 @@ class Game {
 
     playHit() {
         this.hitSound = document.createElement("audio");
-        this.hitSound.src = "../dist/hit3.wav";
+        this.hitSound.src = "./dist/hit3.wav";
         this.hitSound.setAttribute("preload", "auto");
         this.hitSound.setAttribute("controls", "none");
         this.hitSound.volume = 0.5;
@@ -233,7 +233,7 @@ class Game {
 
     playComboBreak() {
         this.comboBreak = document.createElement("audio");
-        this.comboBreak.src = "../dist/combobreak.mp3";
+        this.comboBreak.src = "./dist/combobreak.mp3";
         this.comboBreak.setAttribute("preload", "auto");
         this.hitSound.setAttribute("controls", "none");
         this.comboBreak.style.display = "none";
