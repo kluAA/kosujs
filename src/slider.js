@@ -15,8 +15,10 @@ class Slider {
     }
 
     isInside(x, y) {
-        let dx = this.posX - x;
-        let dy = this.posY - y;
+        let newX = this.posX + (this.endX - this.posX) * ((this.currentTime - this.hT) / (this.eT - this.hT))
+        let newY = this.posY + (this.endY - this.posY) * ((this.currentTime - this.hT) / (this.eT - this.hT))
+        let dx = newX - x;
+        let dy = newY - y;
         return (Math.pow(dx, 2) + Math.pow(dy, 2)) <= this.radius * this.radius;
     }
 

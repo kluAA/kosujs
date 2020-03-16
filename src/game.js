@@ -3,8 +3,8 @@ import { DearYou, Gurenge } from "./beatmap";
 import Slider from "./slider";
 
 const GREAT_WINDOW = 0.2;
-const NORMAL_WINDOW = 0.4
-const OK_WINDOW = 0.55
+const NORMAL_WINDOW = 0.4;
+const OK_WINDOW = 0.5
 
 class Game {
     constructor(canvas, ctx) {
@@ -13,7 +13,6 @@ class Game {
         this.ctx = ctx;
         this.beatmap = Gurenge;
         this.objects = []
-        this.time = 0;
         this.combo = 1;
         this.keyDown = false;
         this.keyUp = true;
@@ -22,6 +21,8 @@ class Game {
     }
 
     load() {
+        this.combo = 1;
+        this.score = 0;
         this.initializeSound();
         this.recordMousePos();
         this.handleKeyDown();
@@ -59,7 +60,7 @@ class Game {
         let playBtn = document.getElementById("play");
         playBtn.addEventListener("click", e => {
             e.preventDefault();
-            this.sound.volume = 0.1;
+            this.sound.volume = 0.7;
             this.sound.play();
             this.canvas.focus();
             this.loadCircles();
@@ -75,7 +76,12 @@ class Game {
             this.objects.forEach(obj => {
               
                 if ((this.sound.currentTime >= obj.sT) && (obj.eT <= this.sound.currentTime)) {
-                    this.handleClear();
+                    let pt = this.getMouse();
+                    if (obj instanceof Slider && obj.isInside(pt.x, pt.y)) {
+                        this.handleClear(true, 300);
+                    } else {
+                        this.handleClear();
+                    }
                 }
                 else if (obj.sT <= this.sound.currentTime) {
                     obj.setCurrentTime(this.sound.currentTime);
@@ -83,11 +89,9 @@ class Game {
                 } 
 
             })
-            // let slider = new Slider({ pos: [200, 100], end: [400, 300], number: 1, sT: 2, hT: 5, eT: 8, color: "rgba(102, 95, 95, 0.404)", radius: 35}, this.ctx)
-            // slider.setCurrentTime(this.sound.currentTime)
-            // slider.render();
-            // this.circles[0].render();
+    
             this.renderScore();
+            this.renderCombo();
             requestAnimationFrame(this.animate.bind(this));
         }
     }
@@ -99,14 +103,6 @@ class Game {
         this.sound.setAttribute("controls", "none");
         this.sound.style.display = "none";
         document.body.appendChild(this.sound);
-
-        this.hitSound = document.createElement("audio");
-        this.hitSound.src = "../dist/hit.wav";
-        this.hitSound.setAttribute("preload", "auto");
-        this.hitSound.setAttribute("controls", "none");
-        this.hitSound.volume = 0.2;
-        this.hitSound.style.display = "none";
-        document.body.appendChild(this.hitSound);
     }   
 
     recordMousePos() {
@@ -121,26 +117,46 @@ class Game {
             this.keyDown = true;
             if (!this.keyUp) return;
             // if (!this.circles[0]) return;
-            let pt = this.getMouse(this.canvas);
+            let pt = this.getMouse();
             
             if (this.objects[0] instanceof Circle) {
                 let inside = this.objects[0].isInside(pt.x, pt.y);
                 if (inside && this.keyUp) {
         
                     if (this.objects[0].hT - GREAT_WINDOW <= this.sound.currentTime) {
+                        this.incrementCombo();
                         this.handleClear(true, 300);
                     } else if (this.objects[0].hT - NORMAL_WINDOW <= this.sound.currentTime) {
+                        this.resetCombo();
                         this.handleClear(true, 100);
                     } else if (this.objects[0].hT - OK_WINDOW <= this.sound.currentTime) {
+                        this.resetCombo();
                         this.handleClear(true, 50);
                     } else {
+                        this.resetCombo();
                         this.handleClear();
                     }
-
                 }
 
             } else if (this.objects[0] instanceof Slider) {
-                console.log("SLIDER")
+                let inside = this.objects[0].isInside(pt.x, pt.y);
+                if (inside && this.keyUp && this.sound.currentTime <= this.objects[0].hT + 0.10) {
+
+                    if ((this.objects[0].hT - GREAT_WINDOW <= this.sound.currentTime) || this.sound.currentTime <= (this.objects[0].hT + 0.10)) {
+                        this.incrementCombo();
+                        this.incrementScore(300);
+                        this.playHit();
+                    } else if (this.objects[0].hT - NORMAL_WINDOW <= this.sound.currentTime) {
+                        this.resetCombo();
+                        this.incrementScore(100);
+                        this.playHit();
+                    } else if (this.objects[0].hT - OK_WINDOW <= this.sound.currentTime) {
+                        this.resetCombo();
+                        this.playHit();
+                    } else {
+                        this.resetCombo();
+                    }
+                }
             }
 
           
@@ -153,13 +169,28 @@ class Game {
         this.score += value * this.combo;
     }
 
+    incrementCombo() {
+        this.combo += 1;
+    }
+
+    resetCombo() {
+        this.combo = 1;
+    }
+
     renderScore() {
         this.ctx.font = "bold 30px Arial";
         this.ctx.textBaseline = "middle";
         this.ctx.textAlign = "end";
         this.ctx.fillStyle = "white";
-        this.ctx.fillText(this.score, 980, 20)
+        this.ctx.fillText(this.score, 980, 20);
         this.ctx.textAlign = "start";
+    }
+
+    renderCombo() {
+        this.ctx.font = "40px Arial";
+        this.ctx.fillStyle = "white";
+        this.ctx.fillText(`${this.combo}x`, 10, 560);
+        
     }
 
     handleKeyUp() {
@@ -171,19 +202,24 @@ class Game {
 
     handleClear(hit, score) {
         if (hit) {
-            this.hitSound = document.createElement("audio");
-            this.hitSound.src = "../dist/hit3.wav";
-            this.hitSound.setAttribute("preload", "auto");
-            this.hitSound.setAttribute("controls", "none");
-            this.hitSound.volume = 0.2;
-            this.hitSound.style.display = "none";
-            document.body.appendChild(this.hitSound);
-            this.hitSound.play();
+            this.playHit();
             this.incrementScore(score);
             this.objects.shift();
         } else { //miss
+            this.combo = 1;
             this.objects.shift();
         }
+    }
+
+    playHit() {
+        this.hitSound = document.createElement("audio");
+        this.hitSound.src = "../dist/hit3.wav";
+        this.hitSound.setAttribute("preload", "auto");
+        this.hitSound.setAttribute("controls", "none");
+        this.hitSound.volume = 0.5;
+        this.hitSound.style.display = "none";
+        document.body.appendChild(this.hitSound);
+        this.hitSound.play();
     }
 
     getMouse() {
